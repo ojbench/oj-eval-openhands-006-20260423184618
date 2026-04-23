@@ -12,7 +12,10 @@ int main() {
   while (true) {
     int pos_x, pos_y, type;
     // Read the coordinate and operation type. 0 for VisitBlock(x, y), 1 for MarkMine(x, y) and 2 for AutoExplore(x, y)
-    std::cin >> pos_x >> pos_y >> type;
+    if (!(std::cin >> pos_x >> pos_y >> type)) {
+      break;  // End of input
+    }
+    
     if (type == 0) {
       VisitBlock(pos_x, pos_y);
     } else if (type == 1) {
@@ -20,9 +23,27 @@ int main() {
     } else if (type == 2) {
       AutoExplore(pos_x, pos_y);
     }
-    PrintMap();
+    if (game_state == 1) {
+      // Victory: show all mines as @ regardless of marked status
+      for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+          if (is_mine[i][j]) {
+            std::cout << '@';
+          } else if (is_visited[i][j]) {
+            std::cout << mine_count[i][j];
+          } else {
+            std::cout << '?';
+          }
+        }
+        std::cout << std::endl;
+      }
+    } else {
+      PrintMap();
+    }
+    
     if (game_state != 0) {
       ExitGame();
     }
   }
+  return 0;
 }
